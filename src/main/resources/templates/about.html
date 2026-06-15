@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">>
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<style>
+
+		* {
+							margin: 0;
+							padding: 0;
+							box-sizing: border-box;
+							font-family: Arial, sans-serif;
+						}
+				html{
+				    font-size: 62.5%;
+				    overflow-x: hidden;
+				    scroll-behavior: smooth;
+				    scroll-padding-top:6.5rem ;
+				}
+
+				body{
+				    background: var(--light-bg);
+				    overflow-x: hidden;
+				    transition: all 1s;
+				}
+
+				section{
+				    padding: 2rem;
+				    margin: 0 auto;
+				    max-width: 1200px;
+				}
+
+
+				.header {
+				    position: fixed;
+				    top: 0;
+				    right: 0;
+				    left: 0;
+				    background-color: rgb(252, 154, 154);
+				    box-shadow: 4px 4px 15px;
+				    z-index: 999;
+				}
+
+				.header .flex {
+				    display: flex;
+				    justify-content: flex-end; /* Align items to the left */
+				    align-items: center;
+				    padding: 4px 8px; 
+				}
+
+				.header .flex .navbar {
+				    display: flex;
+				    gap: 25px;
+				}
+
+				.header .flex .navbar a {
+				    font-size: 2.3rem;
+				    color: black;
+				    text-decoration: none;
+				    padding: 10px 0; 
+				    cursor: pointer;
+				}
+
+				.header .flex .navbar a:hover {
+				    text-decoration: underline;
+				    color: red;
+				}
+
+
+		.about .aboutheading{
+		    text-align: center;
+		    text-transform: uppercase;
+		    color: rgb(23, 22, 22);
+		    font-size: 4rem;
+		    margin-top: 15rem;
+		    margin-bottom: 5rem;
+		}
+
+		.about .box-container{
+		   display: grid;
+		   grid-template-columns: repeat(auto-fit, 35rem);
+		   gap:1.5rem;
+		   align-items: flex-start;
+		   justify-content: center;
+		   text-align: center;
+		}
+
+		.about .box-container .box{
+		    background-color: white;
+		    border-radius: .5rem;
+		    padding:2rem;
+		    text-align: center;
+		    box-shadow: 0 .5rem 1rem rgba(0,0,0,.3);
+		    justify-content: center;
+		}
+
+		.about .box-container .box .aboutmenubtn{
+		    display: block;
+		    margin-top: 1rem;
+		    border-radius: .5rem;
+		    text-align: center;
+		    width: 100%;
+		    color: white;
+		    background-color: rgb(253, 135, 135);
+		    cursor: pointer;
+		    text-transform: capitalize;
+		    text-decoration: none;
+		}
+
+		.about .box-container .box .aboutmenubtn:hover{
+		    color: white;
+		    background-color: black;
+		}
+
+		.about .box-container .box a{
+		    font-size: 3rem;
+		}
+
+		.about .box-container .box img{
+		    width: 100%;
+		    margin-top: 2rem;
+		}
+
+		.about .box-container .box h2{
+		    margin: 1rem 0;
+		    font-size: 3rem;
+		}
+
+		.about .box-container .box p{
+		    font-size: 1.5rem;
+		}
+	</style>
+</head>
+
+<body>
+
+	<header id="headerflex" class="header">
+		<section id="flex" class="flex">
+			<nav class="navbar">
+				<a th:href="@{/index}">Home</a>
+				<a th:href="@{/menu}">Menu</a>
+				<a href="order">Order</a>
+				<a th:href="@{/about}">About</a>
+				<a href="cart">Cart</a>
+				<a th:href="@{/login}">Login</a>
+			</nav>
+		</section>
+
+	</header>
+	
+	
+	<section id="about" class="about">
+	    <h3 class="aboutheading">about us</h3>
+	    <div class="box-container">
+	        <div class="box">
+	            <img src="pictures/about-1.svg" alt="">
+	            <h2>Made with Love</h2>
+	            <p>We believe that great pizza starts with a great team. Our dedicated team of experts ensures every bite is a delight, serving up satisfaction with every slice.</p>
+	            <a th:href="@{/menu}" class="aboutmenubtn">Our menu</a>
+	        </div>
+	        <div id="second" class="box">
+	            <img src="pictures/about-2.svg" alt="">
+	            <h2>Delivery In Time</h2>
+	            <p>We believe in serving food hot and fresh so we ensure the delivery of every order under 30 minutes of placing And we are able to serve hot.</p>
+	            <a th:href="@{/menu}" class="aboutmenubtn">Our menu</a>
+	        </div>
+	        <div class="box">
+	            <img src="pictures/about-3.svg" alt="">
+	            <h2>Enough to share</h2>
+	            <p>We dont compromise with our quantity and quality of our menu , everything is made with love and after you share with other to multiply love </p>
+	            <a th:href="@{/menu}" class="aboutmenubtn">Our menu</a>
+	        </div>
+	    </div>
+	</section>
+
+
+</body>
+
+</html>

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Register - Pizzeria</title>
+
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+			font-family: 'Arial', sans-serif;
+		}
+
+		html {
+			font-size: 62.5%;
+		}
+
+		.header {
+			position: fixed;
+			top: 0;
+			right: 0;
+			left: 0;
+			background-color: rgba(252, 154, 154, 0.95);
+			box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.2);
+			z-index: 999;
+		}
+
+		.header .flex {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 1rem 2rem;
+		}
+
+		.header .logo {
+			font-size: 2.5rem;
+			font-weight: bold;
+			color: black;
+		}
+
+		.header .navbar {
+			display: flex;
+			gap: 2rem;
+		}
+
+		.header .navbar a {
+			font-size: 1.6rem;
+			color: black;
+			text-decoration: none;
+			padding: 0.5rem 1rem;
+			border-radius: 0.5rem;
+			transition: all 0.3s ease;
+		}
+
+		.header .navbar a:hover {
+			background-color: rgba(255, 255, 255, 0.3);
+			color: white;
+		}
+
+		body {
+			min-height: 100vh;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			padding-top: 80px;
+		}
+
+		.register-container {
+			width: 100%;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+
+		form {
+			width: 100%;
+			max-width: 450px;
+			background: white;
+			padding: 3rem 2rem;
+			border-radius: 1.5rem;
+			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+		}
+
+		h1 {
+			color: #333;
+			text-align: center;
+			margin-bottom: 2rem;
+			font-size: 2.5rem;
+		}
+
+		.form-group {
+			margin-bottom: 1.5rem;
+		}
+
+		.form-group label {
+			display: block;
+			font-size: 1.4rem;
+			color: #333;
+			margin-bottom: 0.5rem;
+			font-weight: bold;
+		}
+
+		.box {
+			width: 100%;
+			padding: 1rem;
+			font-size: 1.5rem;
+			border: 2px solid #ddd;
+			border-radius: 0.8rem;
+			font-family: 'Arial', sans-serif;
+			transition: all 0.3s ease;
+		}
+
+		.box:focus {
+			outline: none;
+			border-color: #fc9a9a;
+			box-shadow: 0 0 0 3px rgba(252, 154, 154, 0.1);
+		}
+
+		.btn {
+			width: 100%;
+			padding: 1.2rem;
+			background: linear-gradient(135deg, #fc9a9a, #fa6c6c);
+			border: none;
+			color: white;
+			font-size: 1.6rem;
+			font-weight: bold;
+			border-radius: 0.8rem;
+			cursor: pointer;
+			margin-top: 1.5rem;
+			transition: all 0.3s ease;
+			text-transform: uppercase;
+		}
+
+		.btn:hover {
+			transform: translateY(-3px);
+			box-shadow: 0 10px 20px rgba(252, 154, 154, 0.3);
+		}
+
+		.btn:active {
+			transform: translateY(-1px);
+		}
+
+		.login-link {
+			font-size: 1.5rem;
+			padding-top: 2rem;
+			color: #666;
+			text-align: center;
+			border-top: 2px solid #f0f0f0;
+			margin-top: 1.5rem;
+		}
+
+		.login-link a {
+			color: #fc9a9a;
+			text-decoration: none;
+			font-weight: bold;
+			transition: all 0.3s ease;
+		}
+
+		.login-link a:hover {
+			color: #fa6c6c;
+			text-decoration: underline;
+		}
+
+		.alert {
+			padding: 1rem;
+			margin-bottom: 1.5rem;
+			border-radius: 0.5rem;
+			font-size: 1.4rem;
+		}
+
+		.alert-danger {
+			background-color: #f8d7da;
+			color: #721c24;
+			border: 1px solid #f5c6cb;
+		}
+
+		.alert-success {
+			background-color: #d4edda;
+			color: #155724;
+			border: 1px solid #c3e6cb;
+		}
+
+		.password-requirements {
+			font-size: 1.2rem;
+			color: #666;
+			margin-top: 0.5rem;
+			line-height: 1.6;
+		}
+
+		@media (max-width: 600px) {
+			form {
+				margin: 0 1rem;
+			}
+
+			.header .navbar {
+				gap: 1rem;
+			}
+
+			.header .navbar a {
+				font-size: 1.3rem;
+			}
+		}
+	</style>
+
+</head>
+
+<body>
+
+	<header class="header">
+		<section class="flex">
+			<div class="logo">🍕 Pizzeria</div>
+			<nav class="navbar">
+				<a th:href="@{/index}">Home</a>
+				<a th:href="@{/menu}">Menu</a>
+				<a href="about">About</a>
+			</nav>
+		</section>
+	</header>
+
+	<div class="register-container">
+		<form th:action="@{/register}" method="post">
+			<h1>Create Account</h1>
+
+			<div th:if="${error}" class="alert alert-danger">
+				<span th:text="${error}"></span>
+			</div>
+
+			<div class="form-group">
+				<label for="name">Full Name</label>
+				<input type="text" id="name" name="name" placeholder="Enter your full name" class="box" required>
+			</div>
+
+			<div class="form-group">
+				<label for="email">Email</label>
+				<input type="email" id="email" name="email" placeholder="Enter your email" class="box" required>
+			</div>
+
+			<div class="form-group">
+				<label for="password">Password</label>
+				<input type="password" id="password" name="password" placeholder="Create a strong password" class="box" required>
+				<div class="password-requirements">
+					💡 Use at least 6 characters
+				</div>
+			</div>
+
+			<button type="submit" class="btn">Create Account</button>
+
+			<div class="login-link">
+				Already have an account?
+				<a th:href="@{/login}">Sign in here</a>
+			</div>
+		</form>
+	</div>
+
+</body>
+
+</html>

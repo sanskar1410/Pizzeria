@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>My Orders - Pizzeria</title>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		body {
+			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+			background-image: url('/pictures/cart_background_image.jpg');
+			background-repeat: no-repeat;
+			background-position: center;
+			background-size: cover;
+			background-attachment: fixed;
+			min-height: 100vh;
+			padding: 20px;
+		}
+
+		.container {
+			max-width: 1000px;
+			margin: 0 auto;
+		}
+
+		.header {
+			text-align: center;
+			color: white;
+			margin-bottom: 40px;
+			padding-top: 20px;
+		}
+
+		.header h1 {
+			font-size: 2.5rem;
+			margin-bottom: 10px;
+		}
+
+		.section {
+			background: white;
+			border-radius: 10px;
+			padding: 30px;
+			margin-bottom: 30px;
+			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+		}
+
+		.section h2 {
+			color: rgba(252, 154, 154, 0.95);
+			margin-bottom: 20px;
+			padding-bottom: 10px;
+			border-bottom: 2px solid rgba(252, 154, 154, 0.95);
+		}
+
+		.empty-message {
+			text-align: center;
+			padding: 40px 20px;
+			color: #999;
+			font-size: 1.1rem;
+		}
+
+		.empty-message p {
+			margin: 10px 0;
+		}
+
+		.order-card {
+			border: 1px solid #ddd;
+			border-radius: 8px;
+			padding: 20px;
+			margin-bottom: 15px;
+			background-color: #f9f9f9;
+		}
+
+		.order-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 15px;
+			padding-bottom: 10px;
+			border-bottom: 1px solid #eee;
+		}
+
+		.order-id {
+			font-weight: bold;
+			color: #333;
+		}
+
+		.order-status {
+			padding: 5px 15px;
+			border-radius: 20px;
+			font-size: 0.9rem;
+			font-weight: bold;
+		}
+
+		.status-pending {
+			background-color: #fff3cd;
+			color: #856404;
+		}
+
+		.status-processing {
+			background-color: #cce5ff;
+			color: #004085;
+		}
+
+		.status-delivered {
+			background-color: #d4edda;
+			color: #155724;
+		}
+
+		.status-cancelled {
+			background-color: #f8d7da;
+			color: #721c24;
+		}
+
+		.order-details {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 15px;
+			margin-bottom: 15px;
+		}
+
+		.detail-item {
+			font-size: 0.95rem;
+		}
+
+		.detail-label {
+			font-weight: bold;
+			color: rgba(252, 154, 154, 0.95);
+		}
+
+		.order-items {
+			background: white;
+			padding: 15px;
+			border-radius: 5px;
+			margin-bottom: 15px;
+		}
+
+		.order-items h4 {
+			margin-bottom: 10px;
+			color: #333;
+		}
+
+		.item-list {
+			list-style: none;
+		}
+
+		.item-list li {
+			padding: 8px 0;
+			border-bottom: 1px solid #eee;
+			display: flex;
+			justify-content: space-between;
+		}
+
+		.item-list li:last-child {
+			border-bottom: none;
+		}
+
+		.item-name {
+			color: #333;
+		}
+
+		.item-details {
+			color: #666;
+			font-size: 0.9rem;
+		}
+
+		.order-total {
+			text-align: right;
+			font-size: 1.2rem;
+			font-weight: bold;
+			color: rgba(252, 154, 154, 0.95);
+			padding: 10px;
+			background-color: #f0f0f0;
+			border-radius: 5px;
+		}
+
+		.order-date {
+			color: #666;
+			font-size: 0.9rem;
+		}
+
+		.back-button {
+			display: inline-block;
+			padding: 10px 20px;
+			background-color: rgba(252, 154, 154, 0.95);
+			color: white;
+			text-decoration: none;
+			border-radius: 5px;
+			transition: background-color 0.3s;
+			margin-top: 20px;
+		}
+
+		.back-button:hover {
+			background-color: #764ba2;
+		}
+
+		.error-message {
+			background-color: #f8d7da;
+			color: #721c24;
+			padding: 15px;
+			border-radius: 5px;
+			margin-bottom: 20px;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container">
+		<div class="header">
+			<h1>📦 My Orders</h1>
+			<p th:if="${user}" th:text="'Welcome, ' + ${user.name}"></p>
+		</div>
+
+		<!-- Error Message -->
+		<div th:if="${error}" class="error-message">
+			<strong>Error:</strong> <span th:text="${error}"></span>
+		</div>
+
+		<!-- Current Orders Section -->
+		<div class="section">
+			<h2>Active Orders</h2>
+
+			<div th:if="${currentOrders != null && !currentOrders.isEmpty()}">
+				<div th:each="order : ${currentOrders}" class="order-card">
+					<div class="order-header">
+						<div>
+							<div class="order-id">Order #<span th:text="${order.orderId}"></span></div>
+							<div class="order-date"
+								th:text="'Placed on: ' + ${#temporals.format(order.orderDate, 'dd/MM/yyyy HH:mm')}">
+							</div>
+						</div>
+						<span class="order-status"
+							th:classappend="${order.orderStatus == 'Pending' ? 'status-pending' : order.orderStatus == 'Processing' ? 'status-processing' : 'status-delivered'}"
+							th:text="${order.orderStatus}"></span>
+					</div>
+
+					<div class="order-details">
+						<div class="detail-item">
+							<span class="detail-label">Delivery Address:</span><br>
+							<span th:text="${order.deliveryAddress}"></span>
+						</div>
+						<div class="detail-item">
+							<span class="detail-label">Phone:</span><br>
+							<span th:text="${order.phoneNumber}"></span>
+						</div>
+					</div>
+
+					<div class="order-items" th:if="${order.orderItems != null && !order.orderItems.isEmpty()}">
+						<h4>Items Ordered:</h4>
+						<ul class="item-list">
+							<li th:each="item : ${order.orderItems}">
+								<span class="item-name" th:text="${item.pizza?.pizzaName}"></span>
+								<span class="item-details">
+									Qty: <span th:text="${item.quantity}"></span> x
+									₹<span th:text="${item.price}"></span> =
+									₹<span th:text="${item.quantity * item.price}"></span>
+								</span>
+							</li>
+						</ul>
+					</div>
+
+					<div class="order-total">
+						Total Amount: ₹<span th:text="${order.totalAmount}"></span>
+					</div>
+				</div>
+			</div>
+
+			<div th:if="${currentOrders == null || currentOrders.isEmpty()}" class="empty-message">
+				<p>📭 No active orders</p>
+				<p style="font-size: 0.9rem; color: #bbb;">Your active orders will appear here</p>
+			</div>
+		</div>
+
+		<!-- Previous Orders Section -->
+		<div class="section">
+			<h2>Order History</h2>
+
+			<div th:if="${previousOrders != null && !previousOrders.isEmpty()}">
+				<div th:each="order : ${previousOrders}" class="order-card">
+					<div class="order-header">
+						<div>
+							<div class="order-id">Order #<span th:text="${order.orderId}"></span></div>
+							<div class="order-date"
+								th:text="'Placed on: ' + ${#temporals.format(order.orderDate, 'dd/MM/yyyy HH:mm')}">
+							</div>
+						</div>
+						<span class="order-status"
+							th:classappend="${order.orderStatus == 'Delivered' ? 'status-delivered' : 'status-cancelled'}"
+							th:text="${order.orderStatus}"></span>
+					</div>
+
+					<div class="order-details">
+						<div class="detail-item">
+							<span class="detail-label">Delivery Address:</span><br>
+							<span th:text="${order.deliveryAddress}"></span>
+						</div>
+						<div class="detail-item">
+							<span class="detail-label">Phone:</span><br>
+							<span th:text="${order.phoneNumber}"></span>
+						</div>
+					</div>
+
+					<div class="order-items" th:if="${order.orderItems != null && !order.orderItems.isEmpty()}">
+						<h4>Items Ordered:</h4>
+						<ul class="item-list">
+							<li th:each="item : ${order.orderItems}">
+								<span class="item-name" th:text="${item.pizza?.pizzaName}"></span>
+								<span class="item-details">
+									Qty: <span th:text="${item.quantity}"></span> x
+									₹<span th:text="${item.price}"></span> =
+									₹<span th:text="${item.quantity * item.price}"></span>
+								</span>
+							</li>
+						</ul>
+					</div>
+
+					<div class="order-total">
+						Total Amount: ₹<span th:text="${order.totalAmount}"></span>
+					</div>
+				</div>
+			</div>
+
+			<div th:if="${previousOrders == null || previousOrders.isEmpty()}" class="empty-message">
+				<p>📭 No previous orders</p>
+				<p style="font-size: 0.9rem; color: #bbb;">Your order history will appear here</p>
+			</div>
+		</div>
+
+		<a href="/menu" class="back-button">← Back to Menu</a>
+	</div>
+</body>
+
+</html>

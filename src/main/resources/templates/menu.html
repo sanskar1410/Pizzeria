@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Menu - Pizzeria</title>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+			font-family: Arial, sans-serif;
+		}
+
+		html {
+			font-size: 62.5%;
+			overflow-x: hidden;
+			scroll-behavior: smooth;
+			scroll-padding-top: 6.5rem;
+		}
+
+		body {
+			min-height: 100vh;
+			padding-top: 80px;
+			background: var(--light-bg);
+			overflow-x: hidden;
+			transition: all 1s;
+			background-image: url('/pictures/wooden_menu_bg.png');
+			background-repeat: no-repeat;
+			background-position: center;
+			background-size: cover;
+			background-attachment: fixed;
+		}
+
+		section {
+			padding: 2rem;
+			margin: 0 auto;
+			max-width: 1200px;
+		}
+
+
+		.header {
+			position: fixed;
+			top: 0;
+			right: 0;
+			left: 0;
+			background-color: rgba(252, 154, 154, 0.95);
+			box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.2);
+			z-index: 999;
+		}
+
+		.header .flex {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 1rem 2rem;
+		}
+
+		.header .logo {
+			font-size: 2.5rem;
+			font-weight: bold;
+			color: black;
+			margin-right: auto;
+		}
+
+		.header .flex .navbar {
+			display: flex;
+			gap: 25px;
+			align-items: center;
+		}
+
+		.header .flex .navbar a {
+			font-size: 2.2rem;
+			color: black;
+			text-decoration: none;
+			padding: 10px 15px;
+			cursor: pointer;
+			transition: all 0.3s ease;
+			border-radius: 0.5rem;
+		}
+
+		.header .flex .navbar a:hover {
+			background-color: rgba(255, 255, 255, 0.3);
+			color: white;
+		}
+
+		.user-info {
+			font-size: 1.4rem;
+			color: black;
+			padding: 0.5rem 1rem;
+			background-color: rgba(255, 255, 255, 0.3);
+			border-radius: 0.5rem;
+		}
+
+		/* Modal Styles */
+		.modal {
+			display: none;
+			position: fixed;
+			z-index: 1000;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			background-color: rgba(0, 0, 0, 0.5);
+			padding-top: 60px;
+		}
+
+		.modal-content {
+			background-color: white;
+			margin: 5% auto;
+			padding: 2rem;
+			border-radius: 1rem;
+			width: 80%;
+			max-width: 500px;
+			box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+			animation: slideDown 0.3s ease;
+		}
+
+		@keyframes slideDown {
+			from {
+				transform: translateY(-50px);
+				opacity: 0;
+			}
+
+			to {
+				transform: translateY(0);
+				opacity: 1;
+			}
+		}
+
+		.close-modal {
+			color: #aaa;
+			float: right;
+			font-size: 28px;
+			font-weight: bold;
+			cursor: pointer;
+		}
+
+		.close-modal:hover,
+		.close-modal:focus {
+			color: black;
+		}
+
+		.modal h2 {
+			margin-bottom: 1.5rem;
+			color: #333;
+			font-size: 2rem;
+		}
+
+		.modal p {
+			margin-bottom: 1.5rem;
+			color: #666;
+			font-size: 1.5rem;
+		}
+
+		.modal-buttons {
+			display: flex;
+			gap: 1rem;
+			justify-content: space-around;
+		}
+
+		.modal-buttons a,
+		.modal-buttons button {
+			padding: 1rem 2rem;
+			border: none;
+			border-radius: 0.5rem;
+			font-size: 1.5rem;
+			cursor: pointer;
+			text-decoration: none;
+			transition: all 0.3s ease;
+		}
+
+		.modal-buttons .btn-register {
+			background-color: #667eea;
+			color: white;
+		}
+
+		.modal-buttons .btn-register:hover {
+			background-color: #5568d3;
+		}
+
+		.modal-buttons .btn-login {
+			background-color: #fc9a9a;
+			color: white;
+		}
+
+		.modal-buttons .btn-login:hover {
+			background-color: #fa6c6c;
+		}
+
+		.menu .menuheading {
+			text-align: center;
+			text-transform: uppercase;
+			color: white;
+			font-size: 4rem;
+			margin-top: 2rem;
+			text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+		}
+
+
+		.menu .box-container {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, 35rem);
+			gap: 2rem;
+			align-items: flex-start;
+			justify-content: center;
+			text-align: center;
+			margin-top: 3rem;
+			margin-bottom: 3rem;
+		}
+
+		.menu .box-container .box {
+			background-color: white;
+			border-radius: 1rem;
+			padding: 2rem;
+			text-align: center;
+			box-shadow: 0 5px 15px rgba(0, 0, 0, .3);
+			justify-content: center;
+			position: relative;
+			transition: all 0.3s ease;
+		}
+
+		.menu .box-container .box:hover {
+			transform: translateY(-10px);
+			box-shadow: 0 10px 25px rgba(0, 0, 0, .4);
+		}
+
+		.menu .box-container .box img {
+			width: 100%;
+			height: 200px;
+			object-fit: cover;
+			margin-top: 1rem;
+			margin-bottom: 1.5rem;
+			border-radius: 0.8rem;
+		}
+
+		.menu .box-container .box .price {
+			background-color: #fc9a9a;
+			border-radius: .5rem;
+			padding: 1rem;
+			font-size: 1.7rem;
+			color: white;
+			position: absolute;
+			top: 1.5rem;
+			right: 1.5rem;
+			font-weight: bold;
+		}
+
+		.menu .box-container .box .price span {
+			font-size: 2rem;
+		}
+
+		.menu .box-container .box .name {
+			text-transform: uppercase;
+			font-size: 1.8rem;
+			color: #333;
+			margin: 1rem 0;
+			min-height: 3rem;
+		}
+
+		.menu .box-container .box .category {
+			font-size: 1.3rem;
+			color: #999;
+			margin-bottom: 0.5rem;
+		}
+
+		.menu .box-container .box .description {
+			font-size: 1.4rem;
+			color: #666;
+			margin-bottom: 1rem;
+			min-height: 2.5rem;
+		}
+
+		.menu .box-container .box form {
+			display: flex;
+			gap: 1rem;
+			margin-top: 1.5rem;
+		}
+
+		.menu .box-container .box .qty {
+			width: 80px;
+			border: 2px solid #ddd;
+			padding: 0.8rem;
+			border-radius: .5rem;
+			font-size: 1.6rem;
+			color: #333;
+			text-align: center;
+		}
+
+		.menu .box-container .box .qty:focus {
+			outline: none;
+			border-color: #fc9a9a;
+		}
+
+		.btn {
+			flex: 1;
+			padding: 1rem;
+			border-radius: 0.8rem;
+			text-align: center;
+			border: none;
+			color: white;
+			background-color: #fc9a9a;
+			cursor: pointer;
+			text-transform: uppercase;
+			font-size: 1.5rem;
+			font-weight: bold;
+			transition: all 0.3s ease;
+		}
+
+		.btn:hover {
+			background-color: #fa6c6c;
+			transform: scale(1.05);
+		}
+
+		.btn:active {
+			transform: scale(0.98);
+		}
+
+		@media (max-width: 768px) {
+			.menu .box-container {
+				grid-template-columns: repeat(auto-fit, 25rem);
+			}
+
+			.header .flex {
+				flex-wrap: wrap;
+				gap: 1rem;
+			}
+
+			.header .flex .navbar {
+				width: 100%;
+				justify-content: center;
+				gap: 1rem;
+			}
+
+			.header .navbar a {
+				font-size: 1.3rem;
+			}
+		}
+
+		.alert {
+			padding: 1rem;
+			margin-bottom: 1.5rem;
+			border-radius: 0.5rem;
+			font-size: 1.4rem;
+			text-align: center;
+		}
+
+		.alert-danger {
+			background-color: #f8d7da;
+			color: #721c24;
+			border: 1px solid #f5c6cb;
+		}
+
+		.alert-success {
+			background-color: #d4edda;
+			color: #155724;
+			border: 1px solid #c3e6cb;
+		}
+	</style>
+</head>
+
+<body>
+
+	<header class="header">
+		<section class="flex">
+			<div class="logo">🍕 Pizzeria</div>
+			<nav class="navbar">
+				<a th:href="@{/index}">Home</a>
+				<a th:href="@{/menu}">Menu</a>
+				<a th:href="@{/order/view}" th:unless="${user == null}">Orders</a>
+				<a th:href="@{/cart/view}" th:unless="${user == null}">Cart</a>
+				<a href="#about">About</a>
+				<a th:href="@{/login}" th:if="${user == null}">Login</a>
+				<div class="user-info" th:if="${user != null}">
+					Welcome, <span th:text="${user.name}"></span>!
+					<a th:href="@{/logout}" style="margin-left: 1rem; color: white; text-decoration: none;">Logout</a>
+				</div>
+			</nav>
+		</section>
+	</header>
+
+	<!-- Registration Required Modal -->
+	<div id="registrationModal" class="modal">
+		<div class="modal-content">
+			<span class="close-modal">&times;</span>
+			<h2>Sign Up or Login</h2>
+			<p>You need to be logged in to add items to cart. Please sign up or log in to continue.</p>
+			<div class="modal-buttons">
+				<a th:href="@{/register}" class="btn-register">Sign Up</a>
+				<a th:href="@{/login}" class="btn-login">Login</a>
+			</div>
+		</div>
+	</div>
+
+	<section class="menu" id="menu">
+		<h1 class="menuheading">🍕 Our Menu</h1>
+
+		<div class="box-container">
+
+			<div th:each="pizza : ${pizzas}" class="box">
+				<div class="price">₹<span th:text="${#numbers.formatDecimal(pizza.price, 1, 0)}"></span></div>
+				<img th:src="${pizza.imageUrl}" th:alt="${pizza.pizzaName}"
+					onerror="this.src='https://via.placeholder.com/300x200?text=Pizza'">
+				<div class="name" th:text="${pizza.pizzaName}"></div>
+				<div class="category" th:text="${'Category: ' + pizza.category}"></div>
+				<div class="description" th:text="${pizza.description}"></div>
+				<form th:action="@{/cart/add}" method="post"
+					th:onsubmit="|return handleAddToCart(event, ${user == null})|">
+					<input type="hidden" name="pizzaId" th:value="${pizza.pizzaId}">
+					<input type="number" min="1" max="100" value="1" name="quantity" class="qty">
+					<button type="submit" class="btn">Add to Cart</button>
+				</form>
+			</div>
+
+		</div>
+
+	</section>
+
+	<script>
+		// Get the modal
+		const modal = document.getElementById("registrationModal");
+		const closeBtn = document.querySelector(".close-modal");
+
+		// Close modal when X is clicked
+		closeBtn.onclick = function () {
+			modal.style.display = "none";
+		}
+
+		// Close modal when clicking outside of it
+		window.onclick = function (event) {
+			if (event.target == modal) {
+				modal.style.display = "none";
+			}
+		}
+
+		// Handle add to cart
+		function handleAddToCart(event, isNotLoggedIn) {
+			if (isNotLoggedIn) {
+				event.preventDefault();
+				modal.style.display = "block";
+				return false;
+			}
+			return true;
+		}
+	</script>
+
+</body>
+
+</html>
